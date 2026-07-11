@@ -1,6 +1,6 @@
 import { cache } from "react"
 
-import type { PortableTextBlock } from "@/service/sanity/types"
+import type { PortableTextBlock } from "@/content/types"
 
 import { fetchAssetsLocal } from "./fetch-assets-local"
 

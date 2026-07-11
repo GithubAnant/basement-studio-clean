@@ -1,5 +1,5 @@
 import { track } from "@vercel/analytics"
-import posthog from "posthog-js"
+import posthog from "@/lib/analytics"
 
 import { KONAMI_CODE_SEQUENCE } from "./constants"
 

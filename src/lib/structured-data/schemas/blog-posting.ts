@@ -1,4 +1,4 @@
-import type { PortableTextBlock, SanityImage } from "@/service/sanity/types"
+import type { PortableTextBlock, SanityImage } from "@/content/types"
 
 import { extractPlainText } from "../extract-text"
 import { createImageObject } from "../image-object"

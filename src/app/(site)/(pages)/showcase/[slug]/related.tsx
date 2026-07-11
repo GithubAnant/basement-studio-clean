@@ -2,7 +2,7 @@ import Image from "next/image"
 
 import { Arrow } from "@/components/primitives/icons/arrow"
 import { Link } from "@/components/primitives/link"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 import { cn } from "@/utils/cn"
 
 import { fetchRelatedProjects } from "./sanity"

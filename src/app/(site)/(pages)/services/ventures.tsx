@@ -1,7 +1,7 @@
 import Image from "next/image"
 
 import { PortableText } from "@/components/primitives/portable-text"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 
 import type { ServicesPageData } from "./sanity"
 

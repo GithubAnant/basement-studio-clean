@@ -1,8 +1,5 @@
-import { sanityFetch } from "@/service/sanity"
-import { imageFragment } from "@/service/sanity/queries"
-import type { PortableTextBlock, SanityImage } from "@/service/sanity/types"
-
-// Types
+import type { PortableTextBlock, SanityImage } from "@/content/types"
+import { openPositions, people, peoplePageData, values } from "@/content/data/site-content"
 
 interface SocialNetwork {
   platform: string
@@ -54,91 +51,18 @@ export interface PeoplePageData {
   preOpenPositionsText: PortableTextBlock[] | null
 }
 
-// Queries
-
-const peoplePageQuery = /* groq */ `
-  *[_type == "peoplePage"][0]{
-    title,
-    subheading1,
-    subheading2,
-    preOpenPositionsSideImages[] ${imageFragment},
-    preOpenPositionsText
-  }
-`
-
-const peopleQuery = /* groq */ `
-  *[_type == "person"] | order(title asc) {
-    title,
-    department->{ title },
-    role,
-    image ${imageFragment},
-    socialNetworks[]{ platform, url }
-  }
-`
-
-const valuesQuery = /* groq */ `
-  *[_type == "value"] | order(_createdAt asc) {
-    _key,
-    title,
-    description,
-    image ${imageFragment}
-  }
-`
-
-const openPositionsQuery = /* groq */ `
-  *[_type == "openPosition"] | order(
-    select(
-      type == "Management and Strategy" => 0,
-      type == "Design" => 1,
-      type == "Development" => 2,
-      3
-    ) asc,
-    isOpen desc,
-    title asc
-  ) {
-    title,
-    "slug": slug.current,
-    type,
-    location,
-    isOpen
-  }
-`
-
-// Fetchers
-
-export async function fetchPeoplePage(
-  /** Pass `published: true` for non-draft contexts (e.g. the `.md` endpoint) — disables stega so output isn't polluted with invisible chars. */
-  options?: { published?: boolean }
-): Promise<PeoplePageData | null> {
-  return sanityFetch<PeoplePageData | null>({
-    query: peoplePageQuery,
-    ...(options?.published ? { stega: false, perspective: "published" } : {})
-  })
+export async function fetchPeoplePage(): Promise<PeoplePageData | null> {
+  return peoplePageData
 }
 
-export async function fetchPeople(options?: {
-  published?: boolean
-}): Promise<PersonItem[]> {
-  const result = await sanityFetch<PersonItem[] | null>({
-    query: peopleQuery,
-    ...(options?.published ? { stega: false, perspective: "published" } : {})
-  })
-  return result ?? []
+export async function fetchPeople(): Promise<PersonItem[]> {
+  return people
 }
 
 export async function fetchValues(): Promise<ValueItem[]> {
-  const result = await sanityFetch<ValueItem[] | null>({
-    query: valuesQuery
-  })
-  return result ?? []
+  return values
 }
 
-export async function fetchOpenPositions(options?: {
-  published?: boolean
-}): Promise<OpenPositionItem[]> {
-  const result = await sanityFetch<OpenPositionItem[] | null>({
-    query: openPositionsQuery,
-    ...(options?.published ? { stega: false, perspective: "published" } : {})
-  })
-  return result ?? []
+export async function fetchOpenPositions(): Promise<OpenPositionItem[]> {
+  return openPositions
 }

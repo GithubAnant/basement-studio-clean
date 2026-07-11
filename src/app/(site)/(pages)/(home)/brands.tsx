@@ -1,5 +1,5 @@
 import { BrandsDesktop } from "@/components/brands"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 
 import { BrandsMobile } from "./brands-mobile"
 import type { HomepageData, SanityClient } from "./sanity"

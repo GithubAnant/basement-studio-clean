@@ -1,7 +1,7 @@
 import { MeshDiscardMaterial } from "@react-three/drei"
 import { track } from "@vercel/analytics"
 import { animate } from "motion"
-import posthog from "posthog-js"
+import posthog from "@/lib/analytics"
 import { useRef } from "react"
 
 import { useAssets } from "@/components/assets-provider"

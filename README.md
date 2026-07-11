@@ -1,9 +1,34 @@
-# Basement Studio Website 2025
+# Basement Studio (Clean)
 
 ![Basement Studio Website 2025](./public/readme/hero.gif)
 
-## A digital studio & branding powerhouse making cool shit that performs.
+A simplified, clone-friendly version of the [Basement Studio 2025 website](https://basement.studio). This repo keeps the interactive concept and front-end experience while removing the operational complexity of the original production stack.
 
-We partner with the world’s most ambitious startups, scale-ups and brands to unlock their true potential and growth through the convergence of creativity, design, and technology. Follow us on [X](https://twitter.com/basementstudio) and [Instagram](https://www.instagram.com/basementdotstudio) to see our latest work.
+## What changed
 
-Check out the live website at [basement.studio](https://basement.studio)
+- **Removed** Sanity CMS, GitHub CMS wiring, Notion/Supabase integrations, and related draft/studio routes
+- **Removed** large sets of environment variables and service tokens
+- **Replaced** CMS-driven content with hardcoded data under `src/content/`
+- **Minimal** configuration via `.env.example` (optional `NEXT_PUBLIC_SITE_URL` for local dev)
+
+The result is a project you can clone, install, and run without standing up external services.
+
+## Credits
+
+Built on top of the original [basementstudio/website-2k25](https://github.com/basementstudio/website-2k25) repository. Thanks to Basement Studio for the design, engineering, and open-source foundation.
+
+## Getting started
+
+**Requirements:** Node.js (see `.nvmrc` if present), [pnpm](https://pnpm.io/)
+
+```bash
+git clone https://github.com/GithubAnant/basement-studio-clean.git
+cd basement-studio-clean
+pnpm install
+cp .env.example .env.local   # optional
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+Other scripts: `pnpm build`, `pnpm start`, `pnpm lint`.

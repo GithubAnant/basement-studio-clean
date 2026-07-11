@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 
-import { onScoreUpdate } from "@/service/supabase/client"
+import { onScoreUpdate } from "@/service/scoreboard-client"
 import { useMinigameStore } from "@/store/minigame-store"
 import { cn } from "@/utils/cn"
 

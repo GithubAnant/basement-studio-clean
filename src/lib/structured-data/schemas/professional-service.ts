@@ -1,4 +1,4 @@
-import type { PortableTextBlock } from "@/service/sanity/types"
+import type { PortableTextBlock } from "@/content/types"
 
 import { extractPlainText } from "../extract-text"
 import { ORGANIZATION_ID } from "./organization"

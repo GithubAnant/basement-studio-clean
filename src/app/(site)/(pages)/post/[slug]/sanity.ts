@@ -1,12 +1,7 @@
-import { sanityFetch } from "@/service/sanity"
-import { imageFragment, muxVideoFragment } from "@/service/sanity/queries"
-import type { PortableTextBlock, SanityImage } from "@/service/sanity/types"
+import type { PortableTextBlock, SanityImage } from "@/content/types"
+import { blogPosts } from "@/content/data/site-content"
 
 import { selectRelatedPosts } from "./related-posts.logic"
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 
 export interface PostDetail {
   _id: string
@@ -32,59 +27,9 @@ export interface RelatedPost {
   categories: Array<{ title: string; slug: string }> | null
 }
 
-// ---------------------------------------------------------------------------
-// Fetchers
-// ---------------------------------------------------------------------------
-
-export async function fetchPostBySlug(
-  slug: string,
-  /** Pass `published: true` for non-draft contexts (e.g. the `.md` endpoint) — disables stega so output isn't polluted with invisible chars. */
-  options?: { published?: boolean }
-): Promise<PostDetail | null> {
-  const query = /* groq */ `*[_type == "post" && slug.current == $slug][0]{
-    _id,
-    _createdAt,
-    _updatedAt,
-    title,
-    "slug": slug.current,
-    date,
-    intro,
-    content[]{
-      ...,
-      _type == "image" => {
-        ...,
-        asset->{url, metadata{dimensions{width, height}, lqip}}
-      },
-      _type == "quoteWithAuthor" => {
-        ...,
-        avatar{
-          asset->{url, metadata{dimensions{width, height}, lqip}},
-          alt
-        }
-      },
-      _type == "gridGallery" => {
-        ...,
-        images[]{
-          asset->{url, metadata{dimensions{width, height}, lqip}},
-          alt
-        }
-      },
-      _type == "videoEmbed" => {
-        ...,
-        "videoUrl": file.asset->url,
-        muxVideo ${muxVideoFragment}
-      }
-    },
-    categories[]->{ title, "slug": slug.current },
-    authors[]->{ title },
-    heroImage ${imageFragment},
-    heroVideo
-  }`
-  return sanityFetch<PostDetail | null>({
-    query,
-    params: { slug },
-    ...(options?.published ? { stega: false, perspective: "published" } : {})
-  })
+export async function fetchPostBySlug(slug: string): Promise<PostDetail | null> {
+  const post = blogPosts.find((p) => p.slug === slug)
+  return post ?? null
 }
 
 export interface PostIndexEntry {
@@ -94,33 +39,25 @@ export interface PostIndexEntry {
 }
 
 export async function fetchAllPostsForIndex(): Promise<PostIndexEntry[]> {
-  const query = /* groq */ `*[_type == "post" && defined(slug.current)] | order(date desc){
-    title,
-    "slug": slug.current,
-    date
-  }`
-  return sanityFetch<PostIndexEntry[]>({
-    query,
-    stega: false,
-    perspective: "published"
-  })
+  return blogPosts.map((p) => ({
+    title: p.title,
+    slug: p.slug,
+    date: p.date
+  }))
 }
 
 export async function fetchRelatedPosts(
   currentSlug: string,
   currentCategoryTitles: string[]
 ): Promise<RelatedPost[]> {
-  const query = /* groq */ `*[_type == "post"] | order(date desc){
-    _id,
-    title,
-    "slug": slug.current,
-    date,
-    heroImage ${imageFragment},
-    categories[]->{ title, "slug": slug.current }
-  }`
-  const posts = await sanityFetch<RelatedPost[]>({
-    query
-  })
+  const posts = blogPosts.map((p) => ({
+    _id: p._id,
+    title: p.title,
+    slug: p.slug,
+    date: p.date,
+    heroImage: p.heroImage,
+    categories: p.categories
+  }))
 
   return selectRelatedPosts({
     posts,
@@ -130,25 +67,13 @@ export async function fetchRelatedPosts(
 }
 
 export async function fetchAllPostSlugs(): Promise<string[]> {
-  const query = /* groq */ `*[_type == "post"]{ "slug": slug.current }.slug`
-  return sanityFetch<string[]>({
-    query,
-    stega: false,
-    perspective: "published"
-  })
+  return blogPosts.map((p) => p.slug)
 }
 
 export async function fetchPostMeta(
   slug: string
 ): Promise<{ title: string; intro: PortableTextBlock[] | null } | null> {
-  const query = /* groq */ `*[_type == "post" && slug.current == $slug][0]{ title, intro }`
-  return sanityFetch<{
-    title: string
-    intro: PortableTextBlock[] | null
-  } | null>({
-    query,
-    params: { slug },
-    stega: false,
-    perspective: "published"
-  })
+  const post = blogPosts.find((p) => p.slug === slug)
+  if (!post) return null
+  return { title: post.title, intro: post.intro }
 }

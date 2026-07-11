@@ -2,8 +2,7 @@ import { geolocation } from "@vercel/functions"
 import crypto from "crypto"
 import { NextResponse } from "next/server"
 
-import { createClient } from "@/service/supabase/server"
-import { getTopScoresFromServer } from "@/service/supabase/server"
+import { getTopScores, upsertScore } from "@/service/scoreboard"
 
 const rateLimitMap = new Map<string, { count: number; timestamp: number }>()
 const RATE_LIMIT_WINDOW = 60 * 1000
@@ -54,22 +53,8 @@ export const revalidate = 0
 
 export async function GET() {
   try {
-    const { data, error } = await getTopScoresFromServer()
-
-    if (error) {
-      return NextResponse.json(
-        { error },
-        {
-          status: 500,
-          headers: {
-            "Cache-Control": "no-store, max-age=0"
-          }
-        }
-      )
-    }
-
     return NextResponse.json(
-      { data },
+      { data: getTopScores() },
       {
         headers: {
           "Cache-Control": "no-store, max-age=0"
@@ -95,7 +80,6 @@ export async function POST(request: Request) {
     const { playerName, score, clientId, timestamp, timeWindowHash } =
       await request.json()
 
-    // Validate hash first
     if (!timeWindowHash || typeof timeWindowHash !== "string") {
       return NextResponse.json(
         { error: "Invalid time window hash" },
@@ -103,7 +87,6 @@ export async function POST(request: Request) {
       )
     }
 
-    // validate timestamp
     const now = Date.now()
     const timeDiff = Math.abs(now - timestamp)
 
@@ -149,40 +132,12 @@ export async function POST(request: Request) {
 
     const details = geolocation(request)
 
-    const supabase = createClient()
-
-    // check if a score exists for this player
-    const { data: existingScore } = await supabase
-      .from("scoreboard")
-      .select("id, score")
-      .eq("player_name", playerName)
-      .eq("country", details.flag)
-      .single()
-
-    // if the new score is lower than existing one, just return
-    if (existingScore && score <= existingScore.score) {
-      return NextResponse.json({ success: true })
-    }
-
-    // if no existing score or new score is higher, upsert the record
-    const { error } = await supabase
-      .from("scoreboard")
-      .upsert(
-        {
-          ...(existingScore?.id ? { id: existingScore.id } : {}),
-          player_name: playerName,
-          score: Math.floor(score),
-          client_id: clientId,
-          country: details.flag || "🏳️"
-        },
-        { onConflict: "id" }
-      )
-      .select()
-
-    if (error) {
-      console.error("Supabase error:", error)
-      throw error
-    }
+    upsertScore({
+      player_name: playerName,
+      score: Math.floor(score),
+      client_id: clientId,
+      country: details.flag || "🏳️"
+    })
 
     return NextResponse.json({ success: true })
   } catch (error) {

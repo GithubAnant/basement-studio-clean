@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { Contact } from "@/components/layout/contact"
 import { JsonLd } from "@/lib/structured-data/json-ld"
 import { generateServicesWebPageSchema } from "@/lib/structured-data/schemas/professional-service"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 
 import { Awards } from "./awards"
 import { Hero } from "./hero"

@@ -3,7 +3,7 @@ import Image from "next/image"
 import { memo } from "react"
 
 import { Link } from "@/components/primitives/link"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 import { cn } from "@/utils/cn"
 
 import type { ServiceTestimonial } from "./sanity"

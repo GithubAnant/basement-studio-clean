@@ -14,7 +14,7 @@ import { useHandleContactButton } from "@/hooks/use-handle-contact"
 import { useHandleNavigation } from "@/hooks/use-handle-navigation"
 import { useMedia } from "@/hooks/use-media"
 import { useScrollControl } from "@/hooks/useScrollControl"
-import type { PortableTextBlock } from "@/service/sanity/types"
+import type { PortableTextBlock } from "@/content/types"
 import { cn } from "@/utils/cn"
 import { isInPath } from "@/utils/is-in-path"
 

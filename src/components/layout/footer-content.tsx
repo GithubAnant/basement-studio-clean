@@ -1,4 +1,4 @@
-import type { PortableTextBlock } from "@/service/sanity/types"
+import type { PortableTextBlock } from "@/content/types"
 import { cn } from "@/utils/cn"
 
 import { Copyright, InternalLinks, SocialLinks } from "./shared-sections"

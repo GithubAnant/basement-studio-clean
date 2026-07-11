@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { fetchPosts } from "@/app/(site)/(pages)/blog/sanity"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 import { formatDate } from "@/utils/format-date"
 
 export const BlogList = async ({ params }: { params: { slug: string[] } }) => {

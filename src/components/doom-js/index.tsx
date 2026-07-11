@@ -1,6 +1,6 @@
 import { track } from "@vercel/analytics"
 import { CommandInterface, Emulators } from "emulators"
-import posthog from "posthog-js"
+import posthog from "@/lib/analytics"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { CanvasTexture } from "three"
 

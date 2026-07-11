@@ -12,25 +12,13 @@ interface ContactFormData {
 
 export async function submitContactForm(formData: ContactFormData) {
   try {
-    const html = generateEmailTemplate(formData)
-
-    const resendRes = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`
-      },
-      body: JSON.stringify({
-        from: "hello@basement.studio",
-        to: ["sales@basement.studio"],
-        subject: `${formData.name} - ${formData.company} | Contact Us <basement.studio>`,
-        html
-      })
+    console.info("[Contact Form] Submission received (concept mode)", {
+      name: formData.name,
+      company: formData.company,
+      email: formData.email
     })
 
-    if (!resendRes.ok) {
-      throw new Error("Failed to send email")
-    }
+    generateEmailTemplate(formData)
 
     return { success: true }
   } catch (error) {

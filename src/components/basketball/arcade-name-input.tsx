@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { useKeyPress } from "@/hooks/use-key-press"
-import { submitScore } from "@/service/supabase/client"
+import { submitScore } from "@/service/scoreboard-client"
 import { useMinigameStore } from "@/store/minigame-store"
 import { cn } from "@/utils/cn"
 

@@ -3,11 +3,7 @@ import "@/styles/globals.css"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import localFont from "next/font/local"
-import { draftMode } from "next/headers"
-import { VisualEditing } from "next-sanity/visual-editing"
 
-import { DisableDraftMode } from "@/components/sanity/disable-draft-mode"
-import { SanityLive } from "@/service/sanity/live"
 import { cn } from "@/utils/cn"
 
 export const metadata: Metadata = {
@@ -40,7 +36,6 @@ export const metadata: Metadata = {
   }
 }
 
-// TODO: find a way to load font-feature-settings
 const geistSans = Geist({
   subsets: ["latin"],
   variable: "--font-geist-sans"
@@ -56,9 +51,7 @@ const flauta = localFont({
   variable: "--font-flauta"
 })
 
-const RootLayout = async ({ children }: { children: React.ReactNode }) => {
-  const isDraftMode = (await draftMode()).isEnabled
-
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -71,13 +64,6 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
         suppressHydrationWarning
       >
         {children}
-        <SanityLive />
-        {isDraftMode && (
-          <>
-            <VisualEditing />
-            <DisableDraftMode />
-          </>
-        )}
       </body>
     </html>
   )

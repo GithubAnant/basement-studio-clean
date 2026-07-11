@@ -6,7 +6,7 @@ import { InfoItem } from "@/components/primitives/info-item"
 import { Link } from "@/components/primitives/link"
 import { PortableText } from "@/components/primitives/portable-text"
 import { TextList } from "@/components/primitives/text-list"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 
 import { Back } from "./back"
 import { Filters } from "./gallery-filter"

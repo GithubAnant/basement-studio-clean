@@ -1,14 +1,13 @@
 import { ASSETS_BASE, INSPECTABLES_META } from "@/lib/3d-config/asset-manifest"
-import type { PortableTextBlock } from "@/service/sanity/types"
-
-import { fetchThreeDConfig } from "./fetch-3d-config-sanity"
+import { fetchThreeDConfig } from "@/content/3d-config"
+import type { PortableTextBlock } from "@/content/types"
 import type { AssetsResult } from "./fetch-assets"
 
 // One log per missing inspectable per process — without dedup the warn loop
 // would fire on every request × every missing inspectable, flooding log drains.
 const warnedMissingInspectables = new Set<string>()
 
-/** Joins the repo manifest with Sanity content into one `AssetsResult`. */
+/** Joins the repo manifest with local 3D config into one `AssetsResult`. */
 export async function fetchAssetsLocal(): Promise<AssetsResult> {
   const config = await fetchThreeDConfig()
 
@@ -21,7 +20,7 @@ export async function fetchAssetsLocal(): Promise<AssetsResult> {
     if (!content && !warnedMissingInspectables.has(meta.id)) {
       warnedMissingInspectables.add(meta.id)
       console.warn(
-        `[3d-config] no Sanity inspectableContent for id="${meta.id}"; rendering with empty copy.`
+        `[3d-config] no inspectable content for id="${meta.id}"; rendering with empty copy.`
       )
     }
     return {

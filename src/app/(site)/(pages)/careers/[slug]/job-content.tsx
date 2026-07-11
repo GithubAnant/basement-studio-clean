@@ -4,8 +4,8 @@ import Image from "next/image"
 import { Sandbox } from "@/app/(site)/(pages)/post/[slug]/components/sandbox"
 import { ShikiCodeBlock } from "@/app/(site)/(pages)/post/[slug]/components/shiki-code-block"
 import { CustomTweet } from "@/app/(site)/(pages)/post/[slug]/components/tweet"
-import { getImageUrl } from "@/service/sanity/helpers"
-import type { PortableTextBlock, SanityImage } from "@/service/sanity/types"
+import { getImageUrl } from "@/content/helpers"
+import type { PortableTextBlock, SanityImage } from "@/content/types"
 import { cn } from "@/utils/cn"
 
 interface JobContentProps {

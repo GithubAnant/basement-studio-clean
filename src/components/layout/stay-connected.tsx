@@ -8,7 +8,7 @@ import { useActionState } from "react"
 import { subscribe } from "@/app/(site)/actions/subscribe"
 import { Arrow } from "@/components/primitives/icons/arrow"
 import { Input } from "@/components/primitives/input"
-import type { PortableTextBlock } from "@/service/sanity/types"
+import type { PortableTextBlock } from "@/content/types"
 import { cn } from "@/utils/cn"
 
 interface StayConnectedProps {

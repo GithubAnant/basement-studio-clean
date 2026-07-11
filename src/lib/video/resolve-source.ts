@@ -1,4 +1,4 @@
-import type { SanityMuxVideo, SanityVideo } from "@/service/sanity/types"
+import type { SanityMuxVideo, SanityVideo } from "@/content/types"
 
 export type ResolvedVideoSource =
   | { type: "mux"; playbackId: string; aspectRatio: string | null }

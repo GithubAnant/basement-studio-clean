@@ -1,5 +1,5 @@
-import { sanityFetch } from "@/service/sanity"
-import type { PortableTextBlock } from "@/service/sanity/types"
+import type { PortableTextBlock } from "@/content/types"
+import { companyInfo, postsCount, projectsCount } from "@/content/data/site-content"
 
 export interface CompanyInfo {
   github: string | null
@@ -10,25 +10,13 @@ export interface CompanyInfo {
 }
 
 export async function fetchProjectsCount(): Promise<number> {
-  return sanityFetch<number>({
-    query: /* groq */ `count(*[_type == "showcasePage"][0].projects)`
-  })
+  return projectsCount
 }
 
 export async function fetchPostsCount(): Promise<number> {
-  return sanityFetch<number>({
-    query: /* groq */ `count(*[_type == "post"])`
-  })
+  return postsCount
 }
 
 export async function fetchCompanyInfo(): Promise<CompanyInfo> {
-  return sanityFetch<CompanyInfo>({
-    query: /* groq */ `*[_type == "companyInfo"][0] {
-      github,
-      instagram,
-      twitter,
-      linkedIn,
-      newsletter
-    }`
-  })
+  return companyInfo
 }

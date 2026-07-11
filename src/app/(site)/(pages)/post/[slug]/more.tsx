@@ -4,7 +4,7 @@ import Image from "next/image"
 
 import { Link } from "@/components/primitives/link"
 import { useMedia } from "@/hooks/use-media"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 import { formatDate } from "@/utils/format-date"
 
 import type { RelatedPost } from "./sanity"

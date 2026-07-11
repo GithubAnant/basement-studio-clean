@@ -2,13 +2,6 @@
 
 import { headers } from "next/headers"
 
-import {
-  buildApplicationData,
-  type CareerApplication,
-  type CareerFormData,
-  submitApplication
-} from "@/lib/notion"
-
 const GENERIC_SUBMISSION_ERROR =
   "There was a problem submitting your application. Please try again in a moment or contact us."
 const MIN_SUBMISSION_TIME_MS = 3_000
@@ -17,6 +10,18 @@ const MAX_SUBMISSIONS_PER_WINDOW = 5
 
 const submissionAttempts = new Map<string, number[]>()
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+export interface CareerFormData {
+  position: string
+  email: string
+  portfolio?: string
+  github?: string
+  linkedin?: string
+  salaryExpectations?: number
+  skills: string[]
+  companyWebsite: string
+  formStartedAt: number
+}
 
 function isValidEmail(value: string) {
   return EMAIL_REGEX.test(value)
@@ -93,21 +98,13 @@ export async function submitCareerApplication(formData: CareerFormData) {
       return { success: true }
     }
 
-    console.info("[Career Form] Received submission", {
+    console.info("[Career Form] Received submission (concept mode)", {
       position: formData.position,
       email: formData.email,
-      skillsCount: formData.skills.length,
-      hasPortfolio: Boolean(formData.portfolio),
-      hasGithub: Boolean(formData.github),
-      hasLinkedin: Boolean(formData.linkedin)
+      skillsCount: formData.skills.length
     })
 
     if (!validateCareerFormData(formData)) {
-      console.error("[Career Form] Validation failed", {
-        position: formData.position,
-        email: formData.email,
-        salaryExpectations: formData.salaryExpectations
-      })
       return { success: false, error: GENERIC_SUBMISSION_ERROR }
     }
 
@@ -115,28 +112,10 @@ export async function submitCareerApplication(formData: CareerFormData) {
     const clientIdentifier = getClientIdentifier(headerList, formData.email)
 
     if (isRateLimited(clientIdentifier, now)) {
-      console.error("Career application rate limited:", clientIdentifier)
       return { success: false, error: GENERIC_SUBMISSION_ERROR }
     }
 
-    const applicationData = buildApplicationData(formData)
-
-    const result = await submitApplication(applicationData)
-
-    if (result.success) {
-      return { success: true }
-    }
-
-    console.error("[Career Form] Notion submission failed", {
-      position: formData.position,
-      email: formData.email,
-      error: result.error
-    })
-
-    return {
-      success: false,
-      error: GENERIC_SUBMISSION_ERROR
-    }
+    return { success: true }
   } catch (error) {
     console.error("Error submitting career application:", error)
     return { success: false, error: GENERIC_SUBMISSION_ERROR }

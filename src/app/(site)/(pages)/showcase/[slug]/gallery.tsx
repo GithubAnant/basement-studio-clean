@@ -4,7 +4,7 @@ import Image from "next/image"
 
 import { Video } from "@/components/primitives/video"
 import { resolveVideoSource } from "@/lib/video/resolve-source"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 import { cn } from "@/utils/cn"
 
 import { useProjectContext } from "./context"

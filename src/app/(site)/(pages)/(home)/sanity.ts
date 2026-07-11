@@ -1,20 +1,8 @@
-import { sanityFetch } from "@/service/sanity"
+import type { PortableTextBlock, SanityImage, SanityMuxVideo, SanitySlug, SanityVideo } from "@/content/types"
 import {
-  imageFragment,
-  muxVideoFragment,
-  videoFragment
-} from "@/service/sanity/queries"
-import type {
-  PortableTextBlock,
-  SanityImage,
-  SanityMuxVideo,
-  SanitySlug,
-  SanityVideo
-} from "@/service/sanity/types"
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+  homepageData,
+  organizationData
+} from "@/content/data/site-content"
 
 export interface HomepageData {
   homepage: {
@@ -57,66 +45,6 @@ export interface SanityProjectCategory {
   subcategories: Array<{ _key: string; title: string }> | null
 }
 
-// ---------------------------------------------------------------------------
-// Query
-// ---------------------------------------------------------------------------
-
-const homepageQuery = /* groq */ `{
-  "homepage": *[_type == "homepage"][0]{
-    introTitle,
-    introSubtitle,
-    capabilitiesIntro,
-    featuredProjects[]{
-      _key,
-      title,
-      excerpt,
-      project->{
-        _id,
-        title,
-        slug,
-        categories[]->{
-          _id,
-          title
-        }
-      },
-      cover ${imageFragment},
-      coverVideo ${videoFragment},
-      muxCoverVideo ${muxVideoFragment}
-    },
-    "capabilities": capabilities[]->{
-      _id,
-      title,
-      slug,
-      description,
-      subcategories[]{ _key, title }
-    },
-    "clients": clients[]->{
-      _id,
-      title,
-      logo ${imageFragment},
-      website
-    }
-  }
-}`
-
-// ---------------------------------------------------------------------------
-// Fetch
-// ---------------------------------------------------------------------------
-
-export async function fetchHomepage(
-  /** Pass `published: true` for non-draft contexts (e.g. the `.md` endpoint) — disables stega so output isn't polluted with invisible chars. */
-  options?: { published?: boolean }
-): Promise<HomepageData> {
-  return sanityFetch<HomepageData>({
-    query: homepageQuery,
-    ...(options?.published ? { stega: false, perspective: "published" } : {})
-  })
-}
-
-// ---------------------------------------------------------------------------
-// Organization data (schema.org)
-// ---------------------------------------------------------------------------
-
 export interface OrganizationStructuredData {
   description: string | null
   foundingDate: string | number | null
@@ -144,59 +72,10 @@ export interface OrganizationStructuredData {
   }
 }
 
-const organizationQuery = /* groq */ `{
-  "companyInfo": *[_type == "companyInfo"][0]{
-    github,
-    instagram,
-    twitter,
-    linkedIn
-  },
-  "awards": *[_type == "award" && defined(title)] | order(date desc){
-    title,
-    date,
-    "projectName": project->title
-  }
-}`
+export async function fetchHomepage(): Promise<HomepageData> {
+  return homepageData
+}
 
 export async function fetchOrganizationData(): Promise<OrganizationStructuredData> {
-  const data = await sanityFetch<{
-    companyInfo: {
-      github: string | null
-      instagram: string | null
-      twitter: string | null
-      linkedIn: string | null
-    } | null
-    awards: Array<{
-      title: string
-      date: string | null
-      projectName: string | null
-    }> | null
-  }>({
-    query: organizationQuery
-  })
-
-  return {
-    description: null,
-    foundingDate: null,
-    // Contact emails published across the site (footer, contact page, contact
-    // form). `email` is the primary general inbox; `contactPoints` exposes the
-    // same plus the sales inbox as schema.org ContactPoints.
-    email: "hello@basement.studio",
-    contactPoints: [
-      { email: "hello@basement.studio", contactType: "customer support" },
-      { email: "sales@basement.studio", contactType: "sales" }
-    ],
-    addressCity: null,
-    addressRegion: null,
-    addressCountry: null,
-    logoUrl: null,
-    founders: [],
-    awards: data.awards ?? [],
-    social: {
-      github: data.companyInfo?.github ?? null,
-      instagram: data.companyInfo?.instagram ?? null,
-      twitter: data.companyInfo?.twitter ?? null,
-      linkedIn: data.companyInfo?.linkedIn ?? null
-    }
-  }
+  return organizationData
 }

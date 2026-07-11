@@ -1,6 +1,6 @@
 import type { PortableTextBlock as PTBlock } from "@portabletext/types"
 
-/** Sanity image projected via `imageFragment`. */
+/** Image shape used across hardcoded content. */
 export interface SanityImage {
   alt?: string | null
   asset: {
@@ -12,13 +12,13 @@ export interface SanityImage {
   } | null
 }
 
-/** Sanity video projected via `videoFragment` (file asset). */
+/** Video file reference. */
 export interface SanityVideo {
   url: string | null
   mimeType: string | null
 }
 
-/** Sanity Mux video projected via `muxVideoFragment` (mux.video field). */
+/** Mux video reference. */
 export interface SanityMuxVideo {
   playbackId: string | null
   assetId: string | null
@@ -26,10 +26,9 @@ export interface SanityMuxVideo {
   duration: number | null
 }
 
-/** Sanity slug object. */
+/** Slug object. */
 export interface SanitySlug {
   current: string
 }
 
-/** Re-export for convenience so consumers don't need @portabletext/types. */
 export type PortableTextBlock = PTBlock

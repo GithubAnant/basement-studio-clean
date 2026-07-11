@@ -1,7 +1,7 @@
 "use client" // Error boundaries must be Client Components
 
 import NextError from "next/error"
-import posthog from "posthog-js"
+import posthog from "@/lib/analytics"
 import { useEffect } from "react"
 
 export default function GlobalError({

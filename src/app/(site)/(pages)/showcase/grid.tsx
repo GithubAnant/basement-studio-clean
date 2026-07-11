@@ -7,7 +7,7 @@ import { Link } from "@/components/primitives/link"
 import { TextList } from "@/components/primitives/text-list"
 import { useMedia } from "@/hooks/use-media"
 import { resolveVideoSource } from "@/lib/video/resolve-source"
-import type { SanityImage } from "@/service/sanity/types"
+import type { SanityImage } from "@/content/types"
 import { cn } from "@/utils/cn"
 
 import type { ShowcaseProject } from "./sanity"

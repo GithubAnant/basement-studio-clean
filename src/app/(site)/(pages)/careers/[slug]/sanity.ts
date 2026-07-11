@@ -1,9 +1,5 @@
-import { sanityFetch } from "@/service/sanity"
-import type { PortableTextBlock } from "@/service/sanity/types"
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+import type { PortableTextBlock } from "@/content/types"
+import { careerPositions, openPositions } from "@/content/data/site-content"
 
 export interface CareerPosition {
   _id: string
@@ -22,36 +18,10 @@ export interface CareerPosition {
   } | null
 }
 
-// ---------------------------------------------------------------------------
-// Fetchers
-// ---------------------------------------------------------------------------
-
 export async function fetchCareerPosition(
-  slug: string,
-  /** Pass `published: true` for non-draft contexts (e.g. the `.md` endpoint) — disables stega so output isn't polluted with invisible chars. */
-  options?: { published?: boolean }
+  slug: string
 ): Promise<CareerPosition | null> {
-  const query = /* groq */ `*[_type == "openPosition" && slug.current == $slug][0]{
-    _id,
-    _createdAt,
-    title,
-    "slug": slug.current,
-    type,
-    employmentType,
-    location,
-    isOpen,
-    applyUrl,
-    jobDescription,
-    applyFormSetup {
-      formFields,
-      skills[] { title, slug }
-    }
-  }`
-  return sanityFetch<CareerPosition | null>({
-    query,
-    params: { slug },
-    ...(options?.published ? { stega: false, perspective: "published" } : {})
-  })
+  return careerPositions[slug] ?? null
 }
 
 export interface OpenPositionIndexEntry {
@@ -62,34 +32,19 @@ export interface OpenPositionIndexEntry {
 export async function fetchAllOpenPositionsForIndex(): Promise<
   OpenPositionIndexEntry[]
 > {
-  const query = /* groq */ `*[_type == "openPosition" && isOpen == true && defined(slug.current)] | order(title asc){
-    title,
-    "slug": slug.current
-  }`
-  return sanityFetch<OpenPositionIndexEntry[]>({
-    query,
-    stega: false,
-    perspective: "published"
-  })
+  return openPositions
+    .filter((p) => p.isOpen)
+    .map((p) => ({ title: p.title, slug: p.slug }))
 }
 
 export async function fetchAllOpenPositionSlugs(): Promise<string[]> {
-  const query = /* groq */ `*[_type == "openPosition" && isOpen == true]{ "slug": slug.current }.slug`
-  return sanityFetch<string[]>({
-    query,
-    stega: false,
-    perspective: "published"
-  })
+  return openPositions.filter((p) => p.isOpen).map((p) => p.slug)
 }
 
 export async function fetchCareerPositionMeta(
   slug: string
 ): Promise<{ title: string } | null> {
-  const query = /* groq */ `*[_type == "openPosition" && slug.current == $slug][0]{ title }`
-  return sanityFetch<{ title: string } | null>({
-    query,
-    params: { slug },
-    stega: false,
-    perspective: "published"
-  })
+  const position = careerPositions[slug]
+  if (!position) return null
+  return { title: position.title }
 }

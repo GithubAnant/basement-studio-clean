@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { PortableText } from "@/components/primitives/portable-text"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 import { formatDate } from "@/utils/format-date"
 
 import { fetchFeaturedPost } from "./sanity"

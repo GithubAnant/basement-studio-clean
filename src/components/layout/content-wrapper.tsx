@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic"
 import { usePathname } from "next/navigation"
-import posthog from "posthog-js"
+import posthog from "@/lib/analytics"
 import { useEffect, useMemo } from "react"
 import { ErrorBoundary } from "react-error-boundary"
 

@@ -1,38 +1,12 @@
 import type { MetadataRoute } from "next"
 
-import { sanityFetch } from "@/service/sanity"
+import { sitemapDynamicEntries } from "@/content/data/site-content"
 
 const SITE_URL = "https://basement.studio"
-
-const SITEMAP_QUERY = /* groq */ `{
-  "posts": *[_type == "post" && defined(slug.current)]{
-    "href": "/post/" + slug.current,
-    _updatedAt
-  },
-  "projects": *[_type == "showcasePage"][0].projects[]->{
-    "href": "/showcase/" + slug.current,
-    _updatedAt
-  },
-  "positions": *[_type == "openPosition" && isOpen == true && defined(slug.current)]{
-    "href": "/careers/" + slug.current,
-    _updatedAt
-  },
-  "blogCategories": *[_type == "postCategory" && count(*[_type == "post" && references(^._id)]) > 0 && defined(slug.current)]{
-    "href": "/blog/" + slug.current,
-    _updatedAt
-  }
-}`
 
 interface SitemapEntry {
   href: string
   _updatedAt: string
-}
-
-interface SitemapData {
-  posts: SitemapEntry[] | null
-  projects: SitemapEntry[] | null
-  positions: SitemapEntry[] | null
-  blogCategories: SitemapEntry[] | null
 }
 
 const staticRoutes: Array<{ href: string; priority: number }> = [
@@ -48,42 +22,32 @@ const staticRoutes: Array<{ href: string; priority: number }> = [
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  try {
-    const data = await sanityFetch<SitemapData>({
-      query: SITEMAP_QUERY,
-      perspective: "published",
-      stega: false
-    })
+  const data = sitemapDynamicEntries
+  const now = new Date()
 
-    const now = new Date()
+  const staticEntries: MetadataRoute.Sitemap = staticRoutes.map((r) => ({
+    url: new URL(r.href, SITE_URL).toString(),
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: r.priority
+  }))
 
-    const staticEntries: MetadataRoute.Sitemap = staticRoutes.map((r) => ({
-      url: new URL(r.href, SITE_URL).toString(),
-      lastModified: now,
+  const buildEntries = (
+    entries: SitemapEntry[],
+    priority: number
+  ): MetadataRoute.Sitemap =>
+    entries.map((e) => ({
+      url: new URL(e.href, SITE_URL).toString(),
+      lastModified: new Date(e._updatedAt),
       changeFrequency: "weekly",
-      priority: r.priority
+      priority
     }))
 
-    const buildEntries = (
-      entries: SitemapEntry[] | null,
-      priority: number
-    ): MetadataRoute.Sitemap =>
-      (entries ?? []).map((e) => ({
-        url: new URL(e.href, SITE_URL).toString(),
-        lastModified: new Date(e._updatedAt),
-        changeFrequency: "weekly",
-        priority
-      }))
-
-    return [
-      ...staticEntries,
-      ...buildEntries(data.projects, 0.8),
-      ...buildEntries(data.posts, 0.7),
-      ...buildEntries(data.positions, 0.6),
-      ...buildEntries(data.blogCategories, 0.6)
-    ]
-  } catch (error) {
-    console.error("Failed to generate sitemap:", error)
-    return []
-  }
+  return [
+    ...staticEntries,
+    ...buildEntries(data.projects, 0.8),
+    ...buildEntries(data.posts, 0.7),
+    ...buildEntries(data.positions, 0.6),
+    ...buildEntries(data.blogCategories, 0.6)
+  ]
 }

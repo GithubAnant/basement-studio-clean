@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-import { markdownRoutes } from "@/service/sanity/markdown-proxy.config"
+import { markdownRoutes } from "@/content/markdown-proxy.config"
 
 /**
  * Serves a markdown version of content pages for AI agents / LLMs.

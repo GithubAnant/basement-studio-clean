@@ -1,6 +1,6 @@
 import { MeshDiscardMaterial } from "@react-three/drei"
 import { track } from "@vercel/analytics"
-import posthog from "posthog-js"
+import posthog from "@/lib/analytics"
 import { useCallback, useEffect, useState } from "react"
 
 import { useAmbiencePlaylist } from "@/hooks/use-ambience-playlist"

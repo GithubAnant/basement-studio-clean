@@ -4,7 +4,7 @@ import {
   useTexture
 } from "@react-three/drei"
 import { track } from "@vercel/analytics"
-import posthog from "posthog-js"
+import posthog from "@/lib/analytics"
 import { useEffect, useMemo } from "react"
 import * as THREE from "three"
 import { Color } from "three"

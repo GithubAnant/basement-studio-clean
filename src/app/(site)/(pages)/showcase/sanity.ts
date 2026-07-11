@@ -1,18 +1,9 @@
-import { sanityFetch } from "@/service/sanity"
+import type { SanityImage, SanityMuxVideo, SanityVideo } from "@/content/types"
 import {
-  imageFragment,
-  muxVideoFragment,
-  videoFragment
-} from "@/service/sanity/queries"
-import type {
-  SanityImage,
-  SanityMuxVideo,
-  SanityVideo
-} from "@/service/sanity/types"
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+  showcaseCategories,
+  showcaseProjects,
+  showcaseProjectDetails
+} from "@/content/data/site-content"
 
 export interface ShowcaseProject {
   _id: string
@@ -39,89 +30,6 @@ export interface ShowcaseCategory {
   slug: string
 }
 
-// ---------------------------------------------------------------------------
-// Queries
-// ---------------------------------------------------------------------------
-
-const showcaseProjectsQuery = /* groq */ `
-  *[_type == "showcasePage"][0]{
-    "projects": projects[]->{
-      _id,
-      title,
-      "slug": slug.current,
-      client->{ _id, title },
-      year,
-      categories[]->{ _id, title },
-      cover ${imageFragment},
-      coverVideo ${videoFragment},
-      muxCoverVideo ${muxVideoFragment},
-      icon ${imageFragment},
-      showcase[0...6]{
-        _key,
-        image ${imageFragment},
-        video ${videoFragment},
-        muxVideo ${muxVideoFragment}
-      }
-    }
-  }.projects
-`
-
-const showcaseCountQuery = /* groq */ `
-  count(*[_type == "showcasePage"][0].projects)
-`
-
-const categoriesQuery = /* groq */ `
-  *[_type == "projectCategory"] | order(title asc){
-    _id,
-    title,
-    "slug": slug.current
-  }
-`
-
-// ---------------------------------------------------------------------------
-// Fetchers
-// ---------------------------------------------------------------------------
-
-export async function fetchProjects(): Promise<ShowcaseProject[]> {
-  const projects = await sanityFetch<ShowcaseProject[] | null>({
-    query: showcaseProjectsQuery
-  })
-  return projects ?? []
-}
-
-export async function fetchProjectsCount(): Promise<number> {
-  return sanityFetch<number>({
-    query: showcaseCountQuery
-  })
-}
-
-const projectListForSchemaQuery = /* groq */ `
-  *[_type == "showcasePage"][0].projects[]->{
-    title,
-    "slug": slug.current
-  }
-`
-
-/** Lightweight title + slug list of showcase projects, for the CollectionPage schema. */
-export async function fetchProjectListForSchema(): Promise<
-  Array<{ title: string; slug: string }>
-> {
-  const projects = await sanityFetch<Array<{
-    title: string
-    slug: string
-  }> | null>({
-    query: projectListForSchemaQuery,
-    stega: false
-  })
-  return projects ?? []
-}
-
-export async function fetchCategories(): Promise<ShowcaseCategory[]> {
-  return sanityFetch<ShowcaseCategory[]>({
-    query: categoriesQuery
-  })
-}
-
 export interface ShowcaseListEntry {
   title: string
   slug: string
@@ -129,23 +37,31 @@ export interface ShowcaseListEntry {
   year: number | null
 }
 
-const showcaseListForMarkdownQuery = /* groq */ `
-  *[_type == "showcasePage"][0].projects[]->{
-    title,
-    "slug": slug.current,
-    "client": client->title,
-    year
-  }
-`
+export async function fetchProjects(): Promise<ShowcaseProject[]> {
+  return showcaseProjects
+}
 
-/** Curated showcase project list (title, slug, client, year) for the `/showcase.md` markdown page. */
+export async function fetchProjectsCount(): Promise<number> {
+  return showcaseProjects.length
+}
+
+export async function fetchProjectListForSchema(): Promise<
+  Array<{ title: string; slug: string }>
+> {
+  return showcaseProjects.map((p) => ({ title: p.title, slug: p.slug }))
+}
+
+export async function fetchCategories(): Promise<ShowcaseCategory[]> {
+  return showcaseCategories
+}
+
 export async function fetchShowcaseListForMarkdown(): Promise<
   ShowcaseListEntry[]
 > {
-  const projects = await sanityFetch<ShowcaseListEntry[] | null>({
-    query: showcaseListForMarkdownQuery,
-    stega: false,
-    perspective: "published"
-  })
-  return projects ?? []
+  return showcaseProjects.map((p) => ({
+    title: p.title,
+    slug: p.slug,
+    client: p.client?.title ?? null,
+    year: p.year
+  }))
 }

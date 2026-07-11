@@ -1,10 +1,5 @@
-import { sanityFetch } from "@/service/sanity"
-import { imageFragment } from "@/service/sanity/queries"
-import type { PortableTextBlock, SanityImage } from "@/service/sanity/types"
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+import type { PortableTextBlock, SanityImage } from "@/content/types"
+import { blogCategories, blogPosts } from "@/content/data/site-content"
 
 export interface BlogPost {
   _id: string
@@ -22,104 +17,41 @@ export interface BlogCategory {
   slug: string
 }
 
-// ---------------------------------------------------------------------------
-// Fragments
-// ---------------------------------------------------------------------------
-
-const postFields = /* groq */ `{
-  _id,
-  title,
-  "slug": slug.current,
-  categories[]->{ title, "slug": slug.current },
-  date,
-  intro,
-  heroImage ${imageFragment},
-  heroVideo
-}`
-
-// ---------------------------------------------------------------------------
-// Fetchers
-// ---------------------------------------------------------------------------
-
 export async function fetchPosts(
   category?: string
 ): Promise<{ posts: BlogPost[]; total: number }> {
-  if (category) {
-    const query = /* groq */ `{
-      "posts": *[_type == "post" && $category in categories[]->slug.current] | order(date desc) ${postFields},
-      "total": count(*[_type == "post" && $category in categories[]->slug.current])
-    }`
-    return sanityFetch<{ posts: BlogPost[]; total: number }>({
-      query,
-      params: { category }
-    })
-  }
+  const filtered = category
+    ? blogPosts.filter((p) =>
+        p.categories?.some((c) => c.slug === category)
+      )
+    : blogPosts.slice(1)
 
-  const query = /* groq */ `{
-    "posts": *[_type == "post"] | order(date desc)[1..-1] ${postFields},
-    "total": count(*[_type == "post"])
-  }`
-  return sanityFetch<{ posts: BlogPost[]; total: number }>({
-    query
-  })
+  return {
+    posts: filtered,
+    total: category
+      ? filtered.length
+      : blogPosts.length
+  }
 }
 
 export async function fetchFeaturedPost(): Promise<BlogPost | null> {
-  const query = /* groq */ `*[_type == "post"] | order(date desc)[0] ${postFields}`
-  return sanityFetch<BlogPost | null>({
-    query
-  })
+  return blogPosts[0] ?? null
 }
 
 export async function fetchCategories(): Promise<BlogCategory[]> {
-  const query = /* groq */ `*[_type == "postCategory"] | order(title asc){
-    title,
-    "slug": slug.current
-  }`
-  return sanityFetch<BlogCategory[]>({
-    query
-  })
+  return blogCategories
 }
 
-export async function fetchCategoriesNonEmpty(
-  opts: { forStaticParams?: boolean } = {}
-): Promise<BlogCategory[]> {
-  const query = /* groq */ `*[_type == "postCategory" && count(*[_type == "post" && references(^._id)]) > 0] | order(title asc){
-    title,
-    "slug": slug.current
-  }`
-  return sanityFetch<BlogCategory[]>({
-    query,
-    ...(opts.forStaticParams
-      ? { stega: false, perspective: "published" as const }
-      : {})
-  })
+export async function fetchCategoriesNonEmpty(): Promise<BlogCategory[]> {
+  return blogCategories
 }
 
 export async function fetchPostCount(): Promise<number> {
-  const query = /* groq */ `count(*[_type == "post"])`
-  return sanityFetch<number>({
-    query
-  })
+  return blogPosts.length
 }
 
-const postListForSchemaQuery = /* groq */ `
-  *[_type == "post" && defined(slug.current)] | order(date desc){
-    title,
-    "slug": slug.current
-  }
-`
-
-/** Lightweight title + slug list of all posts, for the CollectionPage schema. */
 export async function fetchPostListForSchema(): Promise<
   Array<{ title: string; slug: string }>
 > {
-  const posts = await sanityFetch<Array<{
-    title: string
-    slug: string
-  }> | null>({
-    query: postListForSchemaQuery,
-    stega: false
-  })
-  return posts ?? []
+  return blogPosts.map((p) => ({ title: p.title, slug: p.slug }))
 }

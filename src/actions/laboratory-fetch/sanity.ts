@@ -1,5 +1,4 @@
-import { sanityFetch } from "@/service/sanity"
-import { imageFragment } from "@/service/sanity/queries"
+import { labProjects } from "@/content/data/site-content"
 
 export interface LabProject {
   title: string
@@ -17,12 +16,5 @@ export interface LabProject {
 }
 
 export async function fetchLabProjects(): Promise<LabProject[]> {
-  return sanityFetch<LabProject[]>({
-    query: /* groq */ `*[_type == "labProject"] {
-      title,
-      url,
-      description,
-      cover ${imageFragment}
-    }`
-  })
+  return labProjects
 }

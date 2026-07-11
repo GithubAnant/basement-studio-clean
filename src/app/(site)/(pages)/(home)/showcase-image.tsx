@@ -6,7 +6,7 @@ import { Link } from "@/components/primitives/link"
 import { useMedia } from "@/hooks/use-media"
 import { useCursor } from "@/hooks/use-mouse"
 import { resolveVideoSource } from "@/lib/video/resolve-source"
-import type { SanityImage } from "@/service/sanity/types"
+import type { SanityImage } from "@/content/types"
 
 import type { FeaturedProjectItem } from "./sanity"
 

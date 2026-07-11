@@ -5,7 +5,7 @@ import { useThree } from "@react-three/fiber"
 import { track } from "@vercel/analytics"
 import { animate, MotionValue } from "motion"
 import type { AnimationPlaybackControls } from "motion/react"
-import posthog from "posthog-js"
+import posthog from "@/lib/analytics"
 import { memo, useEffect, useMemo, useRef, useState } from "react"
 import {
   Box3,

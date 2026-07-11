@@ -1,4 +1,4 @@
-import type { SanityImage } from "@/service/sanity/types"
+import type { SanityImage } from "@/content/types"
 
 const SCHEMA_IMAGE_TARGET_WIDTH = 1200
 const SANITY_CDN_HOST = "cdn.sanity.io"

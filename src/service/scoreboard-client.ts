@@ -1,5 +1,3 @@
-import { createBrowserClient } from "@supabase/ssr"
-
 type ScoreUpdateListener = () => void
 const scoreUpdateListeners = new Set<ScoreUpdateListener>()
 
@@ -11,12 +9,6 @@ export const onScoreUpdate = (listener: ScoreUpdateListener) => {
 const notifyScoreUpdate = () => {
   scoreUpdateListeners.forEach((listener) => listener())
 }
-
-export const createClient = () =>
-  createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
 
 const getClientId = () => {
   if (typeof window === "undefined") return ""

@@ -2,12 +2,12 @@ import { PortableText } from "@portabletext/react"
 import Image from "next/image"
 
 import { Video } from "@/components/primitives/video"
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 import type {
   PortableTextBlock,
   SanityImage,
   SanityMuxVideo
-} from "@/service/sanity/types"
+} from "@/content/types"
 import { cn } from "@/utils/cn"
 
 import { Back } from "./back"

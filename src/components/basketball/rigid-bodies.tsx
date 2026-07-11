@@ -1,7 +1,7 @@
 import { CuboidCollider, CylinderCollider } from "@react-three/rapier"
 import { RigidBody } from "@react-three/rapier"
 import { track } from "@vercel/analytics"
-import posthog from "posthog-js"
+import posthog from "@/lib/analytics"
 
 import { useSiteAudio } from "@/hooks/use-site-audio"
 import { useMinigameStore } from "@/store/minigame-store"

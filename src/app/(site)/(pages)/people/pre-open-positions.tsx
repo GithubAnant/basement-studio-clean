@@ -1,7 +1,7 @@
 import { PortableText } from "@portabletext/react"
 import Image from "next/image"
 
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 
 import type { PeoplePageData } from "./sanity"
 

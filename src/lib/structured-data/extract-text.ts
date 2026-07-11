@@ -1,6 +1,6 @@
 import type { PortableTextSpan } from "@portabletext/types"
 
-import type { PortableTextBlock } from "@/service/sanity/types"
+import type { PortableTextBlock } from "@/content/types"
 
 /**
  * Extracts plain text from an array of Portable Text blocks. Only text spans

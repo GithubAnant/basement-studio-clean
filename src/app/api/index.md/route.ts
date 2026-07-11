@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 
 import { fetchHomepage } from "@/app/(site)/(pages)/(home)/sanity"
 import { SITE_URL } from "@/lib/constants"
-import { portableTextToMarkdown } from "@/service/sanity/portable-text-to-markdown"
+import { portableTextToMarkdown } from "@/content/portable-text-to-markdown"
 
 const MD_HEADERS = {
   "Content-Type": "text/markdown; charset=utf-8",

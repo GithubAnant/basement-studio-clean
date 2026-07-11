@@ -1,7 +1,7 @@
 import { PortableText } from "@portabletext/react"
 import Image from "next/image"
 
-import { getImageUrl } from "@/service/sanity/helpers"
+import { getImageUrl } from "@/content/helpers"
 import { cn } from "@/utils/cn"
 
 import type { ValueItem } from "./sanity"

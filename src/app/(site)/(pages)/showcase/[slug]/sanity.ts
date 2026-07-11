@@ -1,21 +1,7 @@
-import { sanityFetch } from "@/service/sanity"
-import {
-  imageFragment,
-  muxVideoFragment,
-  videoFragment
-} from "@/service/sanity/queries"
-import type {
-  PortableTextBlock,
-  SanityImage,
-  SanityMuxVideo,
-  SanityVideo
-} from "@/service/sanity/types"
+import type { PortableTextBlock, SanityImage, SanityMuxVideo, SanityVideo } from "@/content/types"
+import { showcaseProjectDetails, showcaseProjects } from "@/content/data/site-content"
 
 import { selectRelatedProjects } from "./related-projects.logic"
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 
 export interface ShowcaseProjectDetail {
   _id: string
@@ -50,67 +36,10 @@ export interface RelatedProject {
   icon: SanityImage | null
 }
 
-// ---------------------------------------------------------------------------
-// Queries
-// ---------------------------------------------------------------------------
-
-const projectBySlugQuery = /* groq */ `
-  *[_type == "project" && slug.current == $slug][0]{
-    _id,
-    title,
-    "slug": slug.current,
-    client->{ title, website },
-    year,
-    categories[]->{ title },
-    projectWebsite,
-    content,
-    caseStudy,
-    people[]->{ _id, title, department->{ title } },
-    cover ${imageFragment},
-    icon ${imageFragment},
-    showcase[]{
-      _key,
-      image ${imageFragment},
-      video ${videoFragment},
-      muxVideo ${muxVideoFragment}
-    },
-    "awards": *[_type == "award" && project._ref == ^._id]{ title, date }
-  }
-`
-
-const allProjectSlugsQuery = /* groq */ `
-  *[_type == "showcasePage"][0].projects[]->{ "slug": slug.current }
-`
-
-const projectMetaQuery = /* groq */ `
-  *[_type == "project" && slug.current == $slug][0]{ title, content }
-`
-
-const relatedProjectsQuery = /* groq */ `
-  *[_type == "showcasePage"][0]{
-    "projects": projects[]->{
-      _id,
-      title,
-      "slug": slug.current,
-      icon ${imageFragment}
-    }
-  }.projects
-`
-
-// ---------------------------------------------------------------------------
-// Fetchers
-// ---------------------------------------------------------------------------
-
 export async function fetchProjectBySlug(
-  slug: string,
-  /** Pass `published: true` for non-draft contexts (e.g. the `.md` endpoint) — disables stega so output isn't polluted with invisible chars. */
-  options?: { published?: boolean }
+  slug: string
 ): Promise<ShowcaseProjectDetail | null> {
-  return sanityFetch<ShowcaseProjectDetail | null>({
-    query: projectBySlugQuery,
-    params: { slug },
-    ...(options?.published ? { stega: false, perspective: "published" } : {})
-  })
+  return showcaseProjectDetails[slug] ?? null
 }
 
 export interface ProjectIndexEntry {
@@ -120,52 +49,34 @@ export interface ProjectIndexEntry {
 }
 
 export async function fetchAllProjectsForIndex(): Promise<ProjectIndexEntry[]> {
-  const query = /* groq */ `*[_type == "project" && defined(slug.current)] | order(year desc, title asc){
-    title,
-    "slug": slug.current,
-    year
-  }`
-  return sanityFetch<ProjectIndexEntry[]>({
-    query,
-    stega: false,
-    perspective: "published"
-  })
+  return showcaseProjects.map((p) => ({
+    title: p.title,
+    slug: p.slug,
+    year: p.year
+  }))
 }
 
-export async function fetchAllProjectSlugs(): Promise<Array<{
-  slug: string
-}> | null> {
-  return sanityFetch<Array<{ slug: string }> | null>({
-    query: allProjectSlugsQuery,
-    stega: false,
-    perspective: "published"
-  })
+export async function fetchAllProjectSlugs(): Promise<Array<{ slug: string }> | null> {
+  return showcaseProjects.map((p) => ({ slug: p.slug }))
 }
 
 export async function fetchProjectMeta(
   slug: string
 ): Promise<{ title: string; content: PortableTextBlock[] | null } | null> {
-  return sanityFetch<{
-    title: string
-    content: PortableTextBlock[] | null
-  } | null>({
-    query: projectMetaQuery,
-    params: { slug },
-    stega: false,
-    perspective: "published"
-  })
+  const project = showcaseProjectDetails[slug]
+  if (!project) return null
+  return { title: project.title, content: project.content }
 }
 
 export async function fetchRelatedProjects(
   excludeSlug: string
 ): Promise<RelatedProject[]> {
-  const all = await sanityFetch<RelatedProject[] | null>({
-    query: relatedProjectsQuery
-  })
-  if (!all) return []
+  const all = showcaseProjects.map((p) => ({
+    _id: p._id,
+    title: p.title,
+    slug: p.slug,
+    icon: p.icon
+  }))
 
-  return selectRelatedProjects({
-    projects: all,
-    excludeSlug
-  })
+  return selectRelatedProjects({ projects: all, excludeSlug })
 }
