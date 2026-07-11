@@ -1,34 +1,74 @@
-# Basement Studio (Clean)
+# basement-studio-clean
+
+**Basement Studio's 2025 concept site — stripped down so you can actually clone it.**
 
 ![Basement Studio Website 2025](./public/readme/hero.gif)
 
-A simplified, clone-friendly version of the [Basement Studio 2025 website](https://basement.studio). This repo keeps the interactive concept and front-end experience while removing the operational complexity of the original production stack.
+## About Me
 
-## What changed
+Hey — I'm **Anant Singhal** ([@GithubAnant](https://github.com/GithubAnant)). I build things. Based in New Delhi, currently at **Trout 🐟**.
 
-- **Removed** Sanity CMS, GitHub CMS wiring, Notion/Supabase integrations, and related draft/studio routes
-- **Removed** large sets of environment variables and service tokens
-- **Replaced** CMS-driven content with hardcoded data under `src/content/`
-- **Minimal** configuration via `.env.example` (optional `NEXT_PUBLIC_SITE_URL` for local dev)
+I forked and cleaned up [basementstudio/website-2k25](https://github.com/basementstudio/website-2k25) because the original is incredible — the 3D scenes, the motion, the whole vibe — but running it locally meant standing up Sanity, wiring env vars, and babysitting a bunch of external services. I wanted a version I could clone, poke at, and learn from without that overhead.
 
-The result is a project you can clone, install, and run without standing up external services.
+If you want to see what else I'm up to:
+
+- Portfolio → [anants.studio](https://anants.studio)
+- GitHub → [github.com/GithubAnant](https://github.com/GithubAnant)
+- X → [@anant_hq](https://x.com/anant_hq)
+- LinkedIn → [linkedin.com/in/anantsinghal1](https://www.linkedin.com/in/anantsinghal1/)
+
+## About This Project
+
+This is a **clone-friendly fork** of Basement Studio's 2025 website — a concept agency site built with Next.js, React Three Fiber, custom GLSL shaders, and a lot of motion design.
+
+What I kept: the interactive front-end experience — 3D inspectables, physics toys, page transitions, the whole craft-heavy UI.
+
+What I stripped: the production CMS stack and backend integrations that made the original hard to run as a side project. Content now lives as hardcoded TypeScript under `src/content/` instead of Sanity.
+
+> **Demo:** No public deploy yet — run it locally (see Quick Start below).
 
 ## Credits
 
-Built on top of the original [basementstudio/website-2k25](https://github.com/basementstudio/website-2k25) repository. Thanks to Basement Studio for the design, engineering, and open-source foundation.
+This project wouldn't exist without the original work from [Basement Studio](https://basement.studio). Design, engineering, and the open-source foundation all come from them.
 
-## Getting started
+Original repo: [github.com/basementstudio/website-2k25](https://github.com/basementstudio/website-2k25)
 
-**Requirements:** Node.js (see `.nvmrc` if present), [pnpm](https://pnpm.io/)
+If you ship something cool with this fork, credit them — they did the hard part.
+
+## Quick Start
+
+**Requirements:** Node.js 20+, [pnpm](https://pnpm.io/)
 
 ```bash
 git clone https://github.com/GithubAnant/basement-studio-clean.git
 cd basement-studio-clean
 pnpm install
-cp .env.example .env.local   # optional
+cp .env.example .env.local   # optional — only NEXT_PUBLIC_SITE_URL
 pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Other scripts: `pnpm build`, `pnpm start`, `pnpm lint`.
+Other scripts:
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` | Start dev server |
+| `pnpm build` | Production build |
+| `pnpm start` | Serve production build |
+| `pnpm lint` | Run ESLint |
+
+## What's Different
+
+Compared to the upstream [basementstudio/website-2k25](https://github.com/basementstudio/website-2k25):
+
+- **No Sanity CMS** — content is hardcoded in `src/content/data/`
+- **No PostHog** — analytics stubbed to no-ops
+- **No Notion / Supabase / GitHub CMS** — no external content pipelines
+- **No draft/studio routes** — Sanity Studio and preview wiring removed
+- **Minimal env setup** — optional `NEXT_PUBLIC_SITE_URL` in `.env.example`; no API tokens or service accounts
+- **Same front-end magic** — React Three Fiber, Rapier physics, GLSL shaders, Motion animations, and the concept-site UX are still here
+
+---
+
+Built by [Anant Singhal](https://github.com/GithubAnant) · Forked from [Basement Studio](https://github.com/basementstudio/website-2k25)
