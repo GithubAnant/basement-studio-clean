@@ -1,5 +1,5 @@
-import type { PortableTextBlock } from "@/content/types"
 import { careerPositions, openPositions } from "@/content/data/site-content"
+import type { PortableTextBlock } from "@/content/types"
 
 export interface CareerPosition {
   _id: string
@@ -19,7 +19,8 @@ export interface CareerPosition {
 }
 
 export async function fetchCareerPosition(
-  slug: string
+  slug: string,
+  _options?: { published?: boolean }
 ): Promise<CareerPosition | null> {
   return careerPositions[slug] ?? null
 }

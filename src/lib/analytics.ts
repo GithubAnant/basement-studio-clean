@@ -1,4 +1,4 @@
-const noop = () => {}
+const noop = (..._args: unknown[]) => {}
 
 const analytics = {
   capture: noop,

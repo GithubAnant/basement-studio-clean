@@ -1,5 +1,5 @@
-import type { PortableTextBlock, SanityImage } from "@/content/types"
 import { blogCategories, blogPosts } from "@/content/data/site-content"
+import type { PortableTextBlock, SanityImage } from "@/content/types"
 
 export interface BlogPost {
   _id: string
@@ -21,16 +21,12 @@ export async function fetchPosts(
   category?: string
 ): Promise<{ posts: BlogPost[]; total: number }> {
   const filtered = category
-    ? blogPosts.filter((p) =>
-        p.categories?.some((c) => c.slug === category)
-      )
+    ? blogPosts.filter((p) => p.categories?.some((c) => c.slug === category))
     : blogPosts.slice(1)
 
   return {
     posts: filtered,
-    total: category
-      ? filtered.length
-      : blogPosts.length
+    total: category ? filtered.length : blogPosts.length
   }
 }
 
@@ -42,7 +38,9 @@ export async function fetchCategories(): Promise<BlogCategory[]> {
   return blogCategories
 }
 
-export async function fetchCategoriesNonEmpty(): Promise<BlogCategory[]> {
+export async function fetchCategoriesNonEmpty(_options?: {
+  forStaticParams?: boolean
+}): Promise<BlogCategory[]> {
   return blogCategories
 }
 

@@ -1,5 +1,5 @@
-import type { PortableTextBlock, SanityImage } from "@/content/types"
 import { blogPosts } from "@/content/data/site-content"
+import type { PortableTextBlock, SanityImage } from "@/content/types"
 
 import { selectRelatedPosts } from "./related-posts.logic"
 
@@ -27,7 +27,10 @@ export interface RelatedPost {
   categories: Array<{ title: string; slug: string }> | null
 }
 
-export async function fetchPostBySlug(slug: string): Promise<PostDetail | null> {
+export async function fetchPostBySlug(
+  slug: string,
+  _options?: { published?: boolean }
+): Promise<PostDetail | null> {
   const post = blogPosts.find((p) => p.slug === slug)
   return post ?? null
 }

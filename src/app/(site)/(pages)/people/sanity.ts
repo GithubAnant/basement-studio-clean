@@ -1,5 +1,10 @@
+import {
+  openPositions,
+  people,
+  peoplePageData,
+  values
+} from "@/content/data/site-content"
 import type { PortableTextBlock, SanityImage } from "@/content/types"
-import { openPositions, people, peoplePageData, values } from "@/content/data/site-content"
 
 interface SocialNetwork {
   platform: string
@@ -51,11 +56,15 @@ export interface PeoplePageData {
   preOpenPositionsText: PortableTextBlock[] | null
 }
 
-export async function fetchPeoplePage(): Promise<PeoplePageData | null> {
+export async function fetchPeoplePage(_options?: {
+  published?: boolean
+}): Promise<PeoplePageData | null> {
   return peoplePageData
 }
 
-export async function fetchPeople(): Promise<PersonItem[]> {
+export async function fetchPeople(_options?: {
+  published?: boolean
+}): Promise<PersonItem[]> {
   return people
 }
 
@@ -63,6 +72,8 @@ export async function fetchValues(): Promise<ValueItem[]> {
   return values
 }
 
-export async function fetchOpenPositions(): Promise<OpenPositionItem[]> {
+export async function fetchOpenPositions(_options?: {
+  published?: boolean
+}): Promise<OpenPositionItem[]> {
   return openPositions
 }

@@ -1,5 +1,9 @@
+import {
+  awards,
+  servicesPageData,
+  testimonial
+} from "@/content/data/site-content"
 import type { PortableTextBlock, SanityImage } from "@/content/types"
-import { awards, servicesPageData, testimonial } from "@/content/data/site-content"
 
 export interface ServiceCategory {
   _key: string
@@ -40,7 +44,9 @@ export interface ServicesPageData {
   serviceCategories: ServiceCategory[]
 }
 
-export async function fetchServicesPage(): Promise<ServicesPageData | null> {
+export async function fetchServicesPage(_options?: {
+  published?: boolean
+}): Promise<ServicesPageData | null> {
   return servicesPageData
 }
 

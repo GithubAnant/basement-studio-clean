@@ -1,8 +1,11 @@
-import type { PortableTextBlock, SanityImage, SanityMuxVideo, SanitySlug, SanityVideo } from "@/content/types"
-import {
-  homepageData,
-  organizationData
-} from "@/content/data/site-content"
+import { homepageData, organizationData } from "@/content/data/site-content"
+import type {
+  PortableTextBlock,
+  SanityImage,
+  SanityMuxVideo,
+  SanitySlug,
+  SanityVideo
+} from "@/content/types"
 
 export interface HomepageData {
   homepage: {
@@ -72,7 +75,9 @@ export interface OrganizationStructuredData {
   }
 }
 
-export async function fetchHomepage(): Promise<HomepageData> {
+export async function fetchHomepage(_options?: {
+  published?: boolean
+}): Promise<HomepageData> {
   return homepageData
 }
 

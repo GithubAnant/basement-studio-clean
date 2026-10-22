@@ -1,5 +1,13 @@
-import type { PortableTextBlock, SanityImage, SanityMuxVideo, SanityVideo } from "@/content/types"
-import { showcaseProjectDetails, showcaseProjects } from "@/content/data/site-content"
+import {
+  showcaseProjectDetails,
+  showcaseProjects
+} from "@/content/data/site-content"
+import type {
+  PortableTextBlock,
+  SanityImage,
+  SanityMuxVideo,
+  SanityVideo
+} from "@/content/types"
 
 import { selectRelatedProjects } from "./related-projects.logic"
 
@@ -37,7 +45,8 @@ export interface RelatedProject {
 }
 
 export async function fetchProjectBySlug(
-  slug: string
+  slug: string,
+  _options?: { published?: boolean }
 ): Promise<ShowcaseProjectDetail | null> {
   return showcaseProjectDetails[slug] ?? null
 }
@@ -56,7 +65,9 @@ export async function fetchAllProjectsForIndex(): Promise<ProjectIndexEntry[]> {
   }))
 }
 
-export async function fetchAllProjectSlugs(): Promise<Array<{ slug: string }> | null> {
+export async function fetchAllProjectSlugs(): Promise<Array<{
+  slug: string
+}> | null> {
   return showcaseProjects.map((p) => ({ slug: p.slug }))
 }
 
